@@ -178,44 +178,38 @@ public class UserConnection {
         @Override
         protected void reduce(Text key, Iterable<ValuePair> values,
                               Context context) throws IOException, InterruptedException {
-//            this.outKey = key;
             String s_tmp = key.toString();
             s_tmp += ':';
             this.outKey.set(s_tmp);
             Multimap<String, String> map = HashMultimap.create();
             for (ValuePair v : values) {
-                //归约所有与key相关联的人及与key的关联关系
                 map.put(v.getFriend(), v.getUnion());
-//				String tmp = v.getFriend() + " " + v.getUnion();
-//				this.outValue.set(tmp);
-//				context.write(this.outKey, this.outValue);
             }
 
-            StringBuilder outString = new StringBuilder();//用来保存输出值
-            List<String> outString_tmp = new ArrayList<>();//用来保存输出值
-            Set<String> keys = map.keySet();//取得所有与key有关的人
+            StringBuilder outString = new StringBuilder();
+            List<String> outString_tmp = new ArrayList<>();
+            Set<String> keys = map.keySet();
             List<Integer> l = new ArrayList();
             for(String s : keys){
                 StringBuilder outStr = new StringBuilder();
-                boolean isok = true;//标志是否与key是好友关系
+                boolean isok = true;
                 int acc = 0;
-                Collection<String> v = map.get(s);//v表示与key的关系：yes或共同好友
-                outStr.append(s + "(");//s表示关联人
-                String tmp = new String();//用来存放key和s的共同好友
+                Collection<String> v = map.get(s);
+                outStr.append(s + "(");
+                String tmp = new String();
                 for(String u : v){
-                    if(u.equals("yes")){//表示key与s已经是好友关系了
+                    if(u.equals("yes")){
                         isok = false;
-                        break;//推出该循环，不推荐s
+                        break;
                     }
-                    tmp += u + ",";//记录key与s的共同好友
+                    tmp += u + ",";
                 }
-                if(tmp.length()>=2){//去除tmp结尾的”， “
+                if(tmp.length()>=2){
                     tmp = tmp.substring(0, tmp.length()-1);
                 }
                 if(isok){
                     outStr.append(v.size() + ":" + "[" + tmp.trim() + "]), ");
                     outString_tmp.add(String.valueOf(outStr));
-
                     l.add(v.size());
                 }
             }
@@ -248,7 +242,6 @@ public class UserConnection {
         job.setReducerClass(Reduce1.class);
 
         job.setMapOutputKeyClass(Text.class);
-//        job.setMapOutputValueClass(ValuePair.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
