@@ -209,3 +209,7 @@ static class ValuePair implements WritableComparable<ValuePair> {
 输出的结果如下所示：
 
 ![截图 2022-11-06 18-28-40](https://cdn.jsdelivr.net/gh/JohnAndresLee/websitepicture/%E6%88%AA%E5%9B%BE%202022-11-06%2018-28-40.png)
+
+稍大样本的结果由于过大，因此放在了云盘上：
+
+https://box.nju.edu.cn/d/34931e6e151a4d56acde/
