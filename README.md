@@ -21,6 +21,42 @@
 
 （2）MapReduce得到推荐给每个用户的用户列表（二度朋友）
 
+### 伪代码
+
+```pseudocode
+class Mapper1
+	method Map(UserPairs)
+		for user1, user2 in UserPairs:
+			Emit(user1, user2)
+		
+class Reducer1
+	method Reduce(user, users[u1,u2,u3,...])
+		connections ← set(users[u1,u2,u3,...])
+		Emit(user, connections)
+
+class Mapper2
+	method Map(user, connections)
+		for all friend in connections
+			Emit(user, pair<friend, "yes">)
+		for all pair<friend_i,friend_j> in connections
+			Emit(friend_i, pair<friend_j, user>)
+			Emit(friend_j, pair<friend_i, user>)
+	
+class Reducer2
+	method Reduce(user, ValuePair[pair1<friend, union>],pair2<friend, union>],...)
+		for all potential_friends in ValuePair
+			count ← 0
+			mutual_friend ← []
+			if union = "yes" then
+				break
+			else
+				count ← count+1
+				mutual_friend.append(union)
+			endif
+		Emit(user, count[mutual_friend])
+	
+```
+
 ### 阶段一
 
 设置key为每个用户，value为每个用户的直接好友列表
